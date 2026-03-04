@@ -28,4 +28,12 @@ class SimpleTrainTestSplitStrategy(DataSplittingStrategy):
     
 
 if __name__ == "__main__":
+    splitting=SimpleTrainTestSplitStrategy(test_size=0.2,random_state=42)
+    df=pd.read_csv(r'C:\Users\91954\OneDrive\Desktop\Data_Science\Diabetes_Prediction_System\Extracted_Data\diabetes_prediction_dataset.csv')
+    x_train,x_test,y_train,y_test=splitting.split_data(df=df,target_column='diabetes')
+    x_train.to_csv(r'C:\Users\91954\OneDrive\Desktop\Data_Science\Diabetes_Prediction_System\Spliited_data\X_train.csv',index=False)
+    x_test.to_csv(r'C:\Users\91954\OneDrive\Desktop\Data_Science\Diabetes_Prediction_System\Spliited_data\X_test.csv',index=False)
+    y_train.to_csv(r'C:\Users\91954\OneDrive\Desktop\Data_Science\Diabetes_Prediction_System\Spliited_data\y_train.csv',index=False)
+    y_test.to_csv(r'C:\Users\91954\OneDrive\Desktop\Data_Science\Diabetes_Prediction_System\Spliited_data\y_test.csv',index=False)
+
     pass

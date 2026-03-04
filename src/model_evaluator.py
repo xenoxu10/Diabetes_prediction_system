@@ -121,7 +121,8 @@ from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
 from sklearn.base import RegressorMixin
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import mean_squared_error, r2_score,classification_report, confusion_matrix
+import joblib
 
 # Setup logging configuration
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -216,13 +217,20 @@ class ModelEvaluator:
 # Example usage
 if __name__ == "__main__":
     # Example trained model and data (replace with actual trained model and data)
-    # model = trained_sklearn_model
-    # X_test = test_data_features
-    # y_test = test_data_target
-
+    model = joblib.load(r'C:\Users\91954\OneDrive\Desktop\Data_Science\Diabetes_Prediction_System\Models\linear_regression_model.pkl')
+    X_test = pd.read_csv(r'C:\Users\91954\OneDrive\Desktop\Data_Science\Diabetes_Prediction_System\Cleaned_data\cleaned_X_test.csv')
+    y_test = pd.read_csv(r'C:\Users\91954\OneDrive\Desktop\Data_Science\Diabetes_Prediction_System\Cleaned_data\cleaned_y_test.csv')
+    preprocessor = joblib.load(r'C:\Users\91954\OneDrive\Desktop\Data_Science\Diabetes_Prediction_System\Pipelines\preprocessor.pkl')
+    X_test_transformed = preprocessor.transform(X_test)
+    X_test_df=pd.DataFrame(X_test_transformed,columns=preprocessor.get_feature_names_out())
+    X_test_df.to_csv('Preprocessed_data/preprocessed_cleaned_X_test.csv',index=False)
     # Initialize model evaluator with a specific strategy
-    # model_evaluator = ModelEvaluator(RegressionModelEvaluationStrategy())
-    # evaluation_metrics = model_evaluator.evaluate(model, X_test, y_test)
-    # print(evaluation_metrics)
+    model_evaluator = ModelEvaluator(RegressionModelEvaluationStrategy())
+    evaluation_metrics = model_evaluator.evaluate(model, X_test_df, y_test)
+    classification_report_1=classification_report(y_test, model.predict(X_test_df))
+    confusion_matrix=confusion_matrix(y_test, model.predict(X_test_df))
+    print(classification_report_1)
+    print(confusion_matrix)
+
 
     pass

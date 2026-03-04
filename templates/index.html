@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diabetes Prediction</title>
+</head>
+<body>
+    <h2>Diabetes Prediction Form</h2>
+
+    <form action="/predict" method="post">
+        <input type="text" name="age" placeholder="Age" required><br>
+        <input type="text" name="hypertension" placeholder="Hypertension" required><br>
+        <input type="text" name="heart_disease" placeholder="Heart Disease" required><br>
+        <input type="text" name="bmi" placeholder="BMI" required><br>
+        <input type="text" name="HbA1c_level" placeholder="HbA1c Level" required><br>
+        <input type="text" name="blood_glucose_level" placeholder="Blood Glucose Level" required><br>
+        <input type="text" name="gender" placeholder="Gender (Male/Female/Other)" required><br>
+        <input type="text" name="smoking_history" placeholder="Smoking History (current/ever/former/never/not current)" required><br>
+        <input type="submit" value="Predict">
+    </form>
+
+    <h3>{{ prediction_text }}</h3>
+</body>
+</html>
+
+

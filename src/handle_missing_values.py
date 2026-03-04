@@ -1,6 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
-
+import os
 import pandas as pd
 
 # Setup logging configuration
@@ -138,14 +138,14 @@ class MissingValueHandler:
 # Example usage
 if __name__ == "__main__":
     # Example dataframe
-    # df = pd.read_csv('../extracted-data/your_data_file.csv')
+    file_path=r"C:\Users\91954\OneDrive\Desktop\Data_Science\Diabetes_Prediction_System\Spliited_data"
+    clean_file_path=r"C:\Users\91954\OneDrive\Desktop\Data_Science\Diabetes_Prediction_System\Cleaned_data"
 
-    # Initialize missing value handler with a specific strategy
-    # missing_value_handler = MissingValueHandler(DropMissingValuesStrategy(axis=0, thresh=3))
-    # df_cleaned = missing_value_handler.handle_missing_values(df)
-
-    # Switch to filling missing values with mean
-    # missing_value_handler.set_strategy(FillMissingValuesStrategy(method='mean'))
-    # df_filled = missing_value_handler.handle_missing_values(df)
-
+    for file in os.listdir(file_path):
+        if file.endswith(".csv"):
+            df = pd.read_csv(os.path.join(file_path, file))
+            print(f"\nHandling missing values for {file}...")
+            handler=MissingValueHandler(FillMissingValuesStrategy(method='mean'))
+            df_cleaned = handler.handle_missing_values(df)
+            df_cleaned.to_csv(os.path.join(clean_file_path, f"cleaned_{file}"), index=False)
     pass

@@ -1,0 +1,70 @@
+stages:
+  Data Ingestion:
+    cmd: python src\ingest_data.py
+    deps:
+      - src\ingest_data.py
+      - Data\archive.zip
+    outs:
+      - extracted_data\diabetes_prediction_dataset.csv
+
+  Data Splitting:
+    cmd: python src\data_splitter.py  
+    deps:
+      - src\data_splitter.py 
+      - extracted_data\diabetes_prediction_dataset.csv
+    outs:
+      - Spliited_data\X_train.csv
+      - Spliited_data\X_test.csv  
+      - Spliited_data\y_train.csv
+      - Spliited_data\y_test.csv 
+
+
+  Data Cleaning:
+    cmd: python src\handle_missing_values.py
+    deps:
+      - src\handle_missing_values.py
+      - Spliited_data\X_train.csv
+      - Spliited_data\X_test.csv  
+      - Spliited_data\y_train.csv
+      - Spliited_data\y_test.csv  
+    outs:
+      - Cleaned_data\cleaned_X_train.csv
+      - Cleaned_data\cleaned_X_test.csv  
+      - Cleaned_data\cleaned_y_train.csv
+      - Cleaned_data\cleaned_y_test.csv
+
+
+  Data Preprocessing:
+    cmd: python src\feature_engineering.py
+    deps:
+      - src\feature_engineering.py
+      - Cleaned_data\cleaned_X_train.csv
+      - Cleaned_data\cleaned_X_test.csv  
+      - Cleaned_data\cleaned_y_train.csv
+      - Cleaned_data\cleaned_y_test.csv
+    outs:
+      - Preprocessed_data\preprocessed_cleaned_X_train.csv
+     # - Preprocessed_data\preprocessed_cleaned_X_test.csv  
+      - Pipelines\preprocessor.pkl
+  
+    
+
+  Model Building:
+    cmd: python src\model_building.py
+    deps:
+      - src\model_building.py
+      - Cleaned_data\cleaned_X_train.csv
+      - Cleaned_data\cleaned_y_train.csv
+    outs:
+      - Models\linear_regression_model.pkl
+  Model Evaluation:
+    cmd: python src\model_evaluator.py
+    deps:
+      - src\model_evaluator.py
+      - Models\linear_regression_model.pkl
+      - Pipelines\preprocessor.pkl
+      - Cleaned_data\cleaned_X_test.csv  
+      - Cleaned_data\cleaned_y_test.csv
+    # outs:
+    #   - Evaluation_reports\model_evaluation_metrics.txt
+  

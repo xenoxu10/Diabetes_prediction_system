@@ -1,0 +1,161 @@
+schema: '2.0'
+stages:
+  Data Ingestion:
+    cmd: python src\ingest_data.py
+    deps:
+    - path: Data\archive.zip
+      hash: md5
+      md5: ea95b5e7ed29970d5d344045fc73301c
+      size: 751272
+    - path: src\ingest_data.py
+      hash: md5
+      md5: 6e88d679e246e1831201191f4280fbc9
+      size: 2540
+    outs:
+    - path: extracted_data\diabetes_prediction_dataset.csv
+      hash: md5
+      md5: cb243b99d81d96e9aeb08944ce9ac066
+      size: 3810356
+  Data Splitting:
+    cmd: python src\data_splitter.py
+    deps:
+    - path: extracted_data\diabetes_prediction_dataset.csv
+      hash: md5
+      md5: cb243b99d81d96e9aeb08944ce9ac066
+      size: 3810356
+    - path: src\data_splitter.py
+      hash: md5
+      md5: ce0d48b346c0e43e3ab7967220e8239b
+      size: 1857
+    outs:
+    - path: Spliited_data\X_test.csv
+      hash: md5
+      md5: 32c177434cbd15f14968dd81421fd1ca
+      size: 742236
+    - path: Spliited_data\X_train.csv
+      hash: md5
+      md5: a1566c56609e70ab366cb399dd697322
+      size: 2968203
+    - path: Spliited_data\y_test.csv
+      hash: md5
+      md5: d6e1415cabbbcc3f6a54403ace75704e
+      size: 60010
+    - path: Spliited_data\y_train.csv
+      hash: md5
+      md5: 7c5cd6e824279a30059897c006135e7b
+      size: 240010
+  Data Cleaning:
+    cmd: python src\handle_missing_values.py
+    deps:
+    - path: Spliited_data\X_test.csv
+      hash: md5
+      md5: 32c177434cbd15f14968dd81421fd1ca
+      size: 742236
+    - path: Spliited_data\X_train.csv
+      hash: md5
+      md5: a1566c56609e70ab366cb399dd697322
+      size: 2968203
+    - path: Spliited_data\y_test.csv
+      hash: md5
+      md5: d6e1415cabbbcc3f6a54403ace75704e
+      size: 60010
+    - path: Spliited_data\y_train.csv
+      hash: md5
+      md5: 7c5cd6e824279a30059897c006135e7b
+      size: 240010
+    - path: src\handle_missing_values.py
+      hash: md5
+      md5: 37b9930eefa41b50757c06fcdd55db13
+      size: 5698
+    outs:
+    - path: Cleaned_data\cleaned_X_test.csv
+      hash: md5
+      md5: 32c177434cbd15f14968dd81421fd1ca
+      size: 742236
+    - path: Cleaned_data\cleaned_X_train.csv
+      hash: md5
+      md5: a1566c56609e70ab366cb399dd697322
+      size: 2968203
+    - path: Cleaned_data\cleaned_y_test.csv
+      hash: md5
+      md5: d6e1415cabbbcc3f6a54403ace75704e
+      size: 60010
+    - path: Cleaned_data\cleaned_y_train.csv
+      hash: md5
+      md5: 7c5cd6e824279a30059897c006135e7b
+      size: 240010
+  Data Preprocessing:
+    cmd: python src\feature_engineering.py
+    deps:
+    - path: Cleaned_data\cleaned_X_test.csv
+      hash: md5
+      md5: 32c177434cbd15f14968dd81421fd1ca
+      size: 742236
+    - path: Cleaned_data\cleaned_X_train.csv
+      hash: md5
+      md5: a1566c56609e70ab366cb399dd697322
+      size: 2968203
+    - path: Cleaned_data\cleaned_y_test.csv
+      hash: md5
+      md5: d6e1415cabbbcc3f6a54403ace75704e
+      size: 60010
+    - path: Cleaned_data\cleaned_y_train.csv
+      hash: md5
+      md5: 7c5cd6e824279a30059897c006135e7b
+      size: 240010
+    - path: src\feature_engineering.py
+      hash: md5
+      md5: 66e377c4b5368be73abca3046b41b695
+      size: 4635
+    outs:
+    - path: Pipelines\preprocessor.pkl
+      hash: md5
+      md5: 48b5c1b02ae7153cd6f7fdceaa952db1
+      size: 3693
+    - path: Preprocessed_data\preprocessed_cleaned_X_train.csv
+      hash: md5
+      md5: 5c0646fa8816745d16646d4204611113
+      size: 11831739
+  Model Building:
+    cmd: python src\model_building.py
+    deps:
+    - path: Cleaned_data\cleaned_X_train.csv
+      hash: md5
+      md5: a1566c56609e70ab366cb399dd697322
+      size: 2968203
+    - path: Cleaned_data\cleaned_y_train.csv
+      hash: md5
+      md5: 7c5cd6e824279a30059897c006135e7b
+      size: 240010
+    - path: src\model_building.py
+      hash: md5
+      md5: 0e7d642680fac23640ca34010cf2230b
+      size: 4560
+    outs:
+    - path: Models\linear_regression_model.pkl
+      hash: md5
+      md5: 53affd903b8aef5813d7cc5493532be1
+      size: 1360
+  Model Evaluation:
+    cmd: python src\model_evaluator.py
+    deps:
+    - path: Cleaned_data\cleaned_X_test.csv
+      hash: md5
+      md5: 32c177434cbd15f14968dd81421fd1ca
+      size: 742236
+    - path: Cleaned_data\cleaned_y_test.csv
+      hash: md5
+      md5: d6e1415cabbbcc3f6a54403ace75704e
+      size: 60010
+    - path: Models\linear_regression_model.pkl
+      hash: md5
+      md5: 53affd903b8aef5813d7cc5493532be1
+      size: 1360
+    - path: Pipelines\preprocessor.pkl
+      hash: md5
+      md5: 48b5c1b02ae7153cd6f7fdceaa952db1
+      size: 3693
+    - path: src\model_evaluator.py
+      hash: md5
+      md5: f62a1f18a6815c5ca08a3f0a8b3671da
+      size: 8523
