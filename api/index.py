@@ -1,40 +1,42 @@
-from flask import Flask, render_template, request
+from flask import Flask, request, jsonify
 import joblib
 import numpy as np
 import pandas as pd
+import os
 
 app = Flask(__name__)
 
-# Load model once at startup
-model = joblib.load("C:\\Users\\91954\\OneDrive\\Desktop\\Data_Science\\Diabetes_Prediction_System\\Models\\linear_regression_model.pkl")
+# Correct paths (relative)
+BASE_DIR = os.path.dirname(__file__)
+
+model = joblib.load(os.path.join(BASE_DIR, "linear_regression_model.pkl"))
+preprocessor = joblib.load(os.path.join(BASE_DIR, "preprocessor.pkl"))
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return "API is working"
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    # Get values from form
+    data = request.json
+
     input_data = {
-    "gender": request.form["gender"],
-    "age": float(request.form["age"]),
-    "hypertension": int(request.form["hypertension"]),
-    "heart_disease": int(request.form["heart_disease"]),
-    "smoking_history": request.form["smoking_history"],
-    "bmi": float(request.form["bmi"]),
-    "HbA1c_level": float(request.form["HbA1c_level"]),
-    "blood_glucose_level": float(request.form["blood_glucose_level"]),
+        "gender": data["gender"],
+        "age": float(data["age"]),
+        "hypertension": int(data["hypertension"]),
+        "heart_disease": int(data["heart_disease"]),
+        "smoking_history": data["smoking_history"],
+        "bmi": float(data["bmi"]),
+        "HbA1c_level": float(data["HbA1c_level"]),
+        "blood_glucose_level": float(data["blood_glucose_level"]),
     }
 
     input_df = pd.DataFrame([input_data])
-    preprocessor = joblib.load("Pipelines/preprocessor.pkl")
     features_array = preprocessor.transform(input_df)
-
     prediction = model.predict(features_array)
 
     result = "Diabetic" if prediction[0] == 1 else "Not Diabetic"
-    print(prediction)
-    return render_template("index.html", prediction_text=f'The patient is {result} with {features_array} and {prediction}.')
 
-# if __name__ == "__main__":
-#     pass
+    return jsonify({
+        "prediction": result
+    })
