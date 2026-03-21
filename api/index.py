@@ -36,5 +36,5 @@ def predict():
     print(prediction)
     return render_template("index.html", prediction_text=f'The patient is {result} with {features_array} and {prediction}.')
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     pass
