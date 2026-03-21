@@ -6,7 +6,7 @@ import pandas as pd
 app = Flask(__name__)
 
 # Load model once at startup
-model = joblib.load("Models/linear_regression_model.pkl")
+model = joblib.load("C:\\Users\\91954\\OneDrive\\Desktop\\Data_Science\\Diabetes_Prediction_System\\Models\\linear_regression_model.pkl")
 
 @app.route("/")
 def home():
