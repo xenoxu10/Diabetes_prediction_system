@@ -66,7 +66,7 @@ document.getElementById("predictionForm").addEventListener("submit", async funct
     };
 
     try {
-        const response = await fetch("http://diabetes-prediction-system-pi.vercel.app/predict", {
+        const response = await fetch("https://diabetes-prediction-system-pi.vercel.app/predict", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -80,8 +80,9 @@ document.getElementById("predictionForm").addEventListener("submit", async funct
             result.prediction ? "Result: " + result.prediction : "Error: " + result.error;
 
     } catch (error) {
-        document.getElementById("result").innerText = "Request failed";
-    }
+    console.error(error);  // 👈 ADD THIS
+    document.getElementById("result").innerText = "Request failed: " + error.message;
+}
 });
 </script>
 
