@@ -3,7 +3,8 @@ import joblib
 import requests
 import pandas as pd
 import io
-
+from flask_cors import CORS
+CORS(app)
 app = Flask(__name__)
 
 MODEL_URL = "https://huggingface.co/xenoxu/Diabetes_Prediction_Model/resolve/main/linear_regression_model.pkl"
