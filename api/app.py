@@ -1,35 +1,46 @@
 from flask import Flask, request, jsonify
 import joblib
+import requests
 import pandas as pd
-import os
+import io
 
 app = Flask(__name__)
 
-BASE_DIR = os.path.dirname(__file__)
+MODEL_URL = "https://huggingface.co/xenoxu/Diabetes_Prediction_Model/resolve/main/linear_regression_model.pkl"
+PREPROCESSOR_URL = "https://huggingface.co/xenoxu/Diabetes_Prediction_Model/resolve/main/preprocessor.pkl"
 
-try:
-    model = joblib.load(os.path.join(BASE_DIR, "linear_regression_model.pkl"))
-    preprocessor = joblib.load(os.path.join(BASE_DIR, "preprocessor.pkl"))
-    print("✅ Model loaded successfully")
-except Exception as e:
-    print("❌ Model loading error:", str(e))
+def load_joblib_from_url(url):
+    response = requests.get(url)
+    return joblib.load(io.BytesIO(response.content))
+
+# Load once
+model = load_joblib_from_url(MODEL_URL)
+preprocessor = load_joblib_from_url(PREPROCESSOR_URL)
 
 @app.route("/")
 def home():
-    return "API is working"
+    return "API running"
+
 
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
-        data = request.json
-        print("Incoming data:", data)
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"error": "No input data received"}), 400
 
         input_df = pd.DataFrame([data])
-        features_array = preprocessor.transform(input_df)
-        prediction = model.predict(features_array)
 
-        return jsonify({"prediction": str(prediction[0])})
+        features = preprocessor.transform(input_df)
+        prediction = model.predict(features)
+
+        result = "Diabetic" if prediction[0] == 1 else "Not Diabetic"
+
+        return jsonify({"prediction": result})
 
     except Exception as e:
-        print("❌ Prediction error:", str(e))
         return jsonify({"error": str(e)})
+    
+# if __name__ == "__main__":
+#     app.run(debug=True)
